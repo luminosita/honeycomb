@@ -103,7 +103,7 @@ func (bs *FiberServerTemplate) setupRoutes(ctx context.Context) error {
 func (bs *FiberServerTemplate) setupLogger() log.Logger {
 	log.SetLogger(bs.c.LogCfg.Level, bs.c.LogCfg.Format)
 
-	logger := log.GetLogger()
+	logger := log.Log()
 
 	logger.Infof(
 		"Bee Version: %s, Go Version: %s, Go OS/ARCH: %s %s",
@@ -128,7 +128,7 @@ func (bs *FiberServerTemplate) loadConfig(viper *viper.Viper) error {
 
 	res := validator.Validate(c)
 	if res != nil {
-		log.GetLogger().Errorf("%+v", res)
+		log.Log().Errorf("%+v", res)
 		//TODO: Externalize
 		return errors.New("Failed to load configuration")
 	}

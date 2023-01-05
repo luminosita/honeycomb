@@ -28,7 +28,7 @@ var (
 	logger Logger
 )
 
-func GetLogger() Logger {
+func Log() Logger {
 	once.Do(func() { // <-- atomic, does not allow repeating
 		logger = adapters.NewLogger()
 	})
@@ -37,5 +37,5 @@ func GetLogger() Logger {
 }
 
 func SetLogger(level string, format string) {
-	adapters.SetLogger(GetLogger().(*logrus.Logger), level, format)
+	adapters.SetLogger(Log().(*logrus.Logger), level, format)
 }

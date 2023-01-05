@@ -20,7 +20,7 @@ func NewValidatorAdapter() *ValidatorAdapter {
 func (v *ValidatorAdapter) Validate(obj any) []error {
 	var e []error
 
-	log.GetLogger().Debugf("Validation input: %+v", obj)
+	log.Log().Debugf("Validation input: %+v", obj)
 
 	err := v.validator.Struct(obj)
 	if err != nil {
