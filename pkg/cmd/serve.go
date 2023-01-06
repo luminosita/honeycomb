@@ -22,7 +22,7 @@ type ServerOptions struct {
 	ConfigUrl string
 }
 
-func commandServe(h server.ServerHandler) *cobra.Command {
+func CommandServe(h server.ServerHandler) *cobra.Command {
 	options := ServerOptions{}
 
 	cmd := &cobra.Command{

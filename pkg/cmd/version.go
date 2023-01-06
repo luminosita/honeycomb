@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func commandVersion() *cobra.Command {
+func CommandVersion() *cobra.Command {
 	//TODO : Needs to go to config
 	version := "DEV"
 
