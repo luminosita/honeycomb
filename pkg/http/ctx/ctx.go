@@ -20,8 +20,12 @@ type Ctx struct {
 	validator validators.Validator
 }
 
+type JsonResponse struct {
+	Body string
+}
+
 type JsonError struct {
-	error error
+	Error error
 }
 
 func Convert(handler handlers.Handler) fiber.Handler {
@@ -66,6 +70,12 @@ func (ctx *Ctx) Bind(obj any) error {
 	}
 
 	return nil
+}
+
+func (ctx *Ctx) SendString(body string) error {
+	return ctx.fCtx.Status(fiber.StatusOK).JSON(&JsonResponse{
+		Body: body,
+	})
 }
 
 func (ctx *Ctx) SendResponse(obj any) error {
