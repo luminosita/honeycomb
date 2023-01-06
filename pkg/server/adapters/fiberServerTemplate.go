@@ -100,7 +100,9 @@ func (bs *FiberServerTemplate) setupRoutes(c context.Context) error {
 			return err
 		}
 
-		switch v.Method {
+		switch v.Type {
+		case http.STATIC:
+			bs.App.Static(path, "web/static")
 		case http.GET:
 			bs.App.Get(path, convert(v.Handler))
 		case http.POST:

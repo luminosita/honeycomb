@@ -4,21 +4,22 @@ import (
 	"github.com/luminosita/honeycomb/pkg/http/handlers"
 )
 
-type Method int
+type RouteType int
 
 const (
-	GET Method = iota
+	STATIC RouteType = iota
+	GET
 	POST
 	PUT
 	PATCH
 )
 
-func (m Method) String() string {
-	return []string{"GET", "PUT", "HEAD", "PATCH"}[m]
+func (m RouteType) String() string {
+	return []string{"STATIC", "GET", "PUT", "HEAD", "PATCH"}[m]
 }
 
 type Route struct {
-	Method  Method
+	Type    RouteType
 	Path    string
 	Handler handlers.Handler
 }
