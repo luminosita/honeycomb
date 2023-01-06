@@ -1,11 +1,11 @@
-package ctx
+package validators
 
 import (
 	"fmt"
 )
 
 type BindValidationErrors struct {
-	errs []error
+	Errors []error
 }
 
 func (e *BindValidationErrors) Error() string {

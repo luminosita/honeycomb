@@ -29,9 +29,9 @@ func Convert(handler handlers.Handler) fiber.Handler {
 
 		err := handler(newCtx)
 		if err != nil {
-			var e *BindValidationErrors
+			var e *validators.BindValidationErrors
 			if errors.As(err, &e) {
-				return ctx.Status(fiber.StatusBadRequest).JSON(e.errs)
+				return ctx.Status(fiber.StatusBadRequest).JSON(e.Errors)
 			}
 
 			return ctx.Status(fiber.StatusInternalServerError).JSON(&JsonError{err})
@@ -59,7 +59,9 @@ func (ctx *Ctx) Bind(obj any) error {
 
 	v_errs := ctx.validator.Validate(obj)
 	if v_errs != nil {
-		return &BindValidationErrors{errs: v_errs}
+		return &validators.BindValidationErrors{
+			Errors: v_errs,
+		}
 	}
 
 	return nil
