@@ -6,10 +6,11 @@ import (
 	"github.com/luminosita/honeycomb/pkg/http/handlers"
 	"github.com/luminosita/honeycomb/pkg/validators"
 	"github.com/luminosita/honeycomb/pkg/validators/adapters"
+	"mime/multipart"
 )
 
 type Ctx struct {
-	*fiber.Ctx
+	fCtx *fiber.Ctx
 
 	Body    []byte
 	Params  map[string]string
@@ -43,7 +44,7 @@ func Convert(handler handlers.Handler) fiber.Handler {
 
 func NewCtx(ctx *fiber.Ctx) *Ctx {
 	return &Ctx{
-		Ctx:       ctx,
+		fCtx:      ctx,
 		Body:      ctx.Body(),
 		Params:    ctx.AllParams(),
 		Headers:   ctx.GetReqHeaders(),
@@ -52,7 +53,7 @@ func NewCtx(ctx *fiber.Ctx) *Ctx {
 }
 
 func (ctx *Ctx) Bind(obj any) error {
-	err := ctx.BodyParser(obj)
+	err := ctx.fCtx.BodyParser(obj)
 	if err != nil {
 		return err
 	}
@@ -68,5 +69,9 @@ func (ctx *Ctx) Bind(obj any) error {
 }
 
 func (ctx *Ctx) SendResponse(obj any) error {
-	return ctx.Status(fiber.StatusOK).JSON(obj)
+	return ctx.fCtx.Status(fiber.StatusOK).JSON(obj)
+}
+
+func (ctx *Ctx) FormFile(key string) (*multipart.FileHeader, error) {
+	return ctx.fCtx.FormFile(key)
 }
