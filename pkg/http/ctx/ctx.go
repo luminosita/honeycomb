@@ -6,6 +6,7 @@ import (
 	"github.com/luminosita/honeycomb/pkg/http/handlers"
 	"github.com/luminosita/honeycomb/pkg/validators"
 	"github.com/luminosita/honeycomb/pkg/validators/adapters"
+	"io"
 	"mime/multipart"
 )
 
@@ -84,4 +85,12 @@ func (ctx *Ctx) SendResponse(obj any) error {
 
 func (ctx *Ctx) FormFile(key string) (*multipart.FileHeader, error) {
 	return ctx.fCtx.FormFile(key)
+}
+
+func (ctx *Ctx) SendStream(reader io.Reader, size ...int) error {
+	if len(size) > 0 && size[0] >= 0 {
+		return ctx.fCtx.SendStream(reader, size[0])
+	} else {
+		return ctx.fCtx.SendStream(reader)
+	}
 }
