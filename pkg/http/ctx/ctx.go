@@ -6,16 +6,15 @@ import (
 	"github.com/luminosita/honeycomb/pkg/http/handlers"
 	"github.com/luminosita/honeycomb/pkg/validators"
 	"github.com/luminosita/honeycomb/pkg/validators/adapters"
-	"mime/multipart"
 )
 
 type Ctx struct {
 	*fiber.Ctx
+
 	Body    []byte
 	Params  map[string]string
 	Headers map[string]string
 	UserId  string
-	Form    *multipart.Form
 
 	validator validators.Validator
 }
@@ -45,6 +44,9 @@ func Convert(handler handlers.Handler) fiber.Handler {
 func NewCtx(ctx *fiber.Ctx) *Ctx {
 	return &Ctx{
 		Ctx:       ctx,
+		Body:      ctx.Body(),
+		Params:    ctx.AllParams(),
+		Headers:   ctx.GetReqHeaders(),
 		validator: adapters.NewValidatorAdapter(),
 	}
 }
