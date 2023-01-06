@@ -1,6 +1,8 @@
 package http
 
-import "github.com/luminosita/honeycomb/pkg/http/handlers"
+import (
+	"github.com/luminosita/honeycomb/pkg/http/handlers"
+)
 
 type Method int
 

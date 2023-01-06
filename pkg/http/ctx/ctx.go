@@ -1,9 +1,7 @@
 package ctx
 
 import (
-	"errors"
 	"github.com/gofiber/fiber/v2"
-	"github.com/luminosita/honeycomb/pkg/http/handlers"
 	"github.com/luminosita/honeycomb/pkg/validators"
 	"github.com/luminosita/honeycomb/pkg/validators/adapters"
 	"io"
@@ -27,24 +25,6 @@ type JsonResponse struct {
 
 type JsonError struct {
 	Error error
-}
-
-func Convert(handler handlers.Handler) fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		newCtx := NewCtx(ctx)
-
-		err := handler(newCtx)
-		if err != nil {
-			var e *validators.BindValidationErrors
-			if errors.As(err, &e) {
-				return ctx.Status(fiber.StatusBadRequest).JSON(e.Errors)
-			}
-
-			return ctx.Status(fiber.StatusInternalServerError).JSON(&JsonError{err})
-		}
-
-		return nil
-	}
 }
 
 func NewCtx(ctx *fiber.Ctx) *Ctx {
