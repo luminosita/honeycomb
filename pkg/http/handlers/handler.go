@@ -1,7 +1,7 @@
 package handlers
 
-import "github.com/luminosita/honeycomb/pkg/http"
+import (
+	"github.com/luminosita/honeycomb/pkg/http/ctx"
+)
 
-type Handler interface {
-	Handle(req *http.HttpRequest) (*http.HttpResponse, error)
-}
+type Handler = func(ctx *ctx.Ctx) error

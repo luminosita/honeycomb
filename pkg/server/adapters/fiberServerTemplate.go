@@ -4,7 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/luminosita/honeycomb/pkg/http/adapters"
+	"github.com/luminosita/honeycomb/pkg/http"
+	"github.com/luminosita/honeycomb/pkg/http/ctx"
 	"github.com/luminosita/honeycomb/pkg/log"
 	"github.com/luminosita/honeycomb/pkg/server"
 	adapters2 "github.com/luminosita/honeycomb/pkg/validators/adapters"
@@ -20,12 +21,7 @@ const CFG_ENTRY = "config"
 const FIBER_CFG_ENTRY = "fiber"
 const TAG_NAME = "mapstructure"
 
-// Config holds the server's configuration options.
-//
-// Multiple servers using the same storage are expected to be configured identically.
 type FiberServerTemplate struct {
-	env server.Environment
-
 	c *server.Config
 
 	handler server.ServerHandler
@@ -35,14 +31,12 @@ type FiberServerTemplate struct {
 	*rkfiber.FiberEntry
 }
 
-// NewServer constructs a server from the provided config.
-func NewFiberServerTemplate(env server.Environment, h server.ServerHandler) *FiberServerTemplate {
-	return newFiberServerTemplate(env, h)
+func NewFiberServerTemplate(h server.ServerHandler) *FiberServerTemplate {
+	return newFiberServerTemplate(h)
 }
 
-func newFiberServerTemplate(env server.Environment, h server.ServerHandler) *FiberServerTemplate {
+func newFiberServerTemplate(h server.ServerHandler) *FiberServerTemplate {
 	return &FiberServerTemplate{
-		env:     env,
 		handler: h,
 	}
 }
@@ -75,8 +69,8 @@ func (bs *FiberServerTemplate) Run(ctx context.Context, viper *viper.Viper) erro
 	return nil
 }
 
-func (bs *FiberServerTemplate) setupRoutes(ctx context.Context) error {
-	routes := bs.handler.Routes(ctx)
+func (bs *FiberServerTemplate) setupRoutes(c context.Context) error {
+	routes := bs.handler.Routes(c)
 
 	for _, v := range routes {
 		path, err := url.JoinPath(bs.c.BaseUrl, v.Path)
@@ -86,14 +80,14 @@ func (bs *FiberServerTemplate) setupRoutes(ctx context.Context) error {
 		}
 
 		switch v.Method {
-		case server.GET:
-			bs.App.Get(path, adapters.Convert(v.Handler))
-		case server.POST:
-			bs.App.Post(path, adapters.Convert(v.Handler))
-		case server.PUT:
-			bs.App.Put(path, adapters.Convert(v.Handler))
-		case server.PATCH:
-			bs.App.Patch(path, adapters.Convert(v.Handler))
+		case http.GET:
+			bs.App.Get(path, ctx.Convert(v.Handler))
+		case http.POST:
+			bs.App.Post(path, ctx.Convert(v.Handler))
+		case http.PUT:
+			bs.App.Put(path, ctx.Convert(v.Handler))
+		case http.PATCH:
+			bs.App.Patch(path, ctx.Convert(v.Handler))
 		}
 	}
 
@@ -105,9 +99,12 @@ func (bs *FiberServerTemplate) setupLogger() log.Logger {
 
 	logger := log.Log()
 
+	//TODO: Read version from somewhere
+	version := "DEV"
+
 	logger.Infof(
 		"Bee Version: %s, Go Version: %s, Go OS/ARCH: %s %s",
-		bs.env,
+		version,
 		runtime.Version(),
 		runtime.GOOS,
 		runtime.GOARCH,

@@ -3,8 +3,8 @@ package adapters
 import (
 	errors2 "errors"
 	"github.com/go-playground/validator/v10"
-	"github.com/luminosita/honeycomb/pkg/errors"
 	"github.com/luminosita/honeycomb/pkg/log"
+	"github.com/luminosita/honeycomb/pkg/validators"
 )
 
 type ValidatorAdapter struct {
@@ -30,7 +30,7 @@ func (v *ValidatorAdapter) Validate(obj any) []error {
 		}
 
 		for _, err := range err.(validator.ValidationErrors) {
-			element := errors.ValidationError{
+			element := validators.ValidationError{
 				FailedField: err.StructNamespace(),
 				Tag:         err.Tag(),
 				Value:       err.Param(),
