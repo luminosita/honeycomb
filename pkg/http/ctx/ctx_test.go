@@ -34,6 +34,15 @@ type a struct {
 	B int    `validate:"gte=0,lte=130"`
 }
 
+type Handle = func(c *ctx.Ctx) error
+type TestHandler struct {
+	h Handle
+}
+
+func (t *TestHandler) Handle(c *ctx.Ctx) error {
+	return t.h(c)
+}
+
 func setupTest(m *Mock) func() {
 	if m == nil {
 		panic("Mock not initialized")
@@ -48,21 +57,21 @@ func setupTest(m *Mock) func() {
 	_ = utils.SetupRoute(m.app, "", &http.Route{
 		Type: http.GET,
 		Path: "/hello",
-		Handler: func(c *ctx.Ctx) error {
+		Handler: &TestHandler{h: func(c *ctx.Ctx) error {
 			return c.SendString("Hello, World!")
-		},
+		}},
 	})
 	_ = utils.SetupRoute(m.app, "", &http.Route{
 		Type: http.GET,
 		Path: "/error",
-		Handler: func(c *ctx.Ctx) error {
+		Handler: &TestHandler{h: func(c *ctx.Ctx) error {
 			return errors.New("Test Error")
-		},
+		}},
 	})
 	_ = utils.SetupRoute(m.app, "/validation", &http.Route{
 		Type: http.GET,
 		Path: "/good",
-		Handler: func(c *ctx.Ctx) error {
+		Handler: &TestHandler{h: func(c *ctx.Ctx) error {
 			err := adapters.NewValidatorAdapter().Validate(&a{
 				A: "v1",
 				B: 123,
@@ -71,21 +80,21 @@ func setupTest(m *Mock) func() {
 				return err
 			}
 			return c.SendString("Hello, World!")
-		},
+		}},
 	})
 	_ = utils.SetupRoute(m.app, "/validation", &http.Route{
 		Type: http.GET,
 		Path: "/bad",
-		Handler: func(c *ctx.Ctx) error {
+		Handler: &TestHandler{h: func(c *ctx.Ctx) error {
 			return adapters.NewValidatorAdapter().Validate(&a{})
-		},
+		}},
 	})
 	_ = utils.SetupRoute(m.app, "/validation", &http.Route{
 		Type: http.GET,
 		Path: "/nil",
-		Handler: func(c *ctx.Ctx) error {
+		Handler: &TestHandler{h: func(c *ctx.Ctx) error {
 			return adapters.NewValidatorAdapter().Validate(nil)
-		},
+		}},
 	})
 
 	return func() {

@@ -37,7 +37,7 @@ func convert(handler handlers.Handler) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		newCtx := ctx2.NewCtx(ctx)
 
-		err := handler(newCtx)
+		err := handler.Handle(newCtx)
 		if err != nil {
 			var e *validators.ValidationError
 			if errors.As(err, &e) {

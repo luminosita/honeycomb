@@ -4,4 +4,6 @@ import (
 	"github.com/luminosita/honeycomb/pkg/http/ctx"
 )
 
-type Handler = func(ctx *ctx.Ctx) error
+type Handler interface {
+	Handle(ctx *ctx.Ctx) error
+}
