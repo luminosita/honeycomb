@@ -3,14 +3,10 @@ package adapters
 import (
 	"context"
 	"errors"
-	"github.com/gofiber/fiber/v2"
-	"github.com/luminosita/honeycomb/pkg/http"
-	ctx2 "github.com/luminosita/honeycomb/pkg/http/ctx"
-	"github.com/luminosita/honeycomb/pkg/http/handlers"
 	"github.com/luminosita/honeycomb/pkg/log"
 	"github.com/luminosita/honeycomb/pkg/server"
+	"github.com/luminosita/honeycomb/pkg/server/utils"
 	"github.com/luminosita/honeycomb/pkg/util"
-	"github.com/luminosita/honeycomb/pkg/validators"
 	adapters2 "github.com/luminosita/honeycomb/pkg/validators/adapters"
 	rkfiber "github.com/rookie-ninja/rk-fiber/boot"
 	"github.com/spf13/viper"
@@ -69,45 +65,14 @@ func (bs *FiberServerTemplate) Run(ctx context.Context, viper *viper.Viper) erro
 	return nil
 }
 
-func convert(handler handlers.Handler) fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		newCtx := ctx2.NewCtx(ctx)
-
-		err := handler(newCtx)
-		if err != nil {
-			var e *validators.ValidationError
-			if errors.As(err, &e) {
-				return ctx.Status(fiber.StatusBadRequest).JSON(e.Error())
-			}
-
-			return ctx.Status(fiber.StatusInternalServerError).JSON(&ctx2.JsonError{err.Error()})
-		}
-
-		return nil
-	}
-}
-
 func (bs *FiberServerTemplate) setupRoutes(c context.Context) error {
 	routes := bs.handler.Routes(c)
 
 	for _, v := range routes {
-		path, err := url.JoinPath(bs.c.BaseUrl, v.Path)
+		err := utils.SetupRoute(bs.App, bs.c.BaseUrl, v)
 
 		if err != nil {
 			return err
-		}
-
-		switch v.Type {
-		case http.STATIC:
-			bs.App.Static(v.Path, "web/static")
-		case http.GET:
-			bs.App.Get(path, convert(v.Handler))
-		case http.POST:
-			bs.App.Post(path, convert(v.Handler))
-		case http.PUT:
-			bs.App.Put(path, convert(v.Handler))
-		case http.PATCH:
-			bs.App.Patch(path, convert(v.Handler))
 		}
 	}
 

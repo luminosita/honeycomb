@@ -5,7 +5,7 @@ import (
 )
 
 type ValidationError struct {
-	Errors []error
+	Errors []error `json:"error"`
 }
 
 func (e *ValidationError) Error() string {

@@ -1,3 +1,4 @@
+//go:generate mockgen -destination=./mocks/mock_fiberCtx.go -package=mocks . GetDocumenter
 package ctx
 
 import (
@@ -24,7 +25,7 @@ type JsonResponse struct {
 }
 
 type JsonError struct {
-	Error string `json:"error"`
+	Msg string `json:"error"`
 }
 
 func NewCtx(ctx *fiber.Ctx) *Ctx {
