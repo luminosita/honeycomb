@@ -83,7 +83,7 @@ func convert(handler handlers.Handler) fiber.Handler {
 				return ctx.Status(fiber.StatusBadRequest).JSON(e.Errors)
 			}
 
-			return ctx.Status(fiber.StatusInternalServerError).JSON(&ctx2.JsonError{err})
+			return ctx.Status(fiber.StatusInternalServerError).JSON(&ctx2.JsonError{err.Error()})
 		}
 
 		return nil
@@ -102,7 +102,7 @@ func (bs *FiberServerTemplate) setupRoutes(c context.Context) error {
 
 		switch v.Type {
 		case http.STATIC:
-			bs.App.Static(path, "web/static")
+			bs.App.Static(v.Path, "web/static")
 		case http.GET:
 			bs.App.Get(path, convert(v.Handler))
 		case http.POST:

@@ -20,11 +20,11 @@ type Ctx struct {
 }
 
 type JsonResponse struct {
-	Body string
+	Body string `json:"body"`
 }
 
 type JsonError struct {
-	Error error
+	Error string `json:"error"`
 }
 
 func NewCtx(ctx *fiber.Ctx) *Ctx {
