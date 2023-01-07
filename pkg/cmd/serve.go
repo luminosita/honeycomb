@@ -90,7 +90,6 @@ func setupViper(options *ServerOptions, pflags *pflag.FlagSet) (*viper.Viper, er
 		}
 	}
 
-	//TOOD: Environnment vars are not working
 	viper.SetEnvPrefix("bee") // will be uppercased automatically
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()

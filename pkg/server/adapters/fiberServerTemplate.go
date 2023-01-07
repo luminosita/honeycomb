@@ -3,26 +3,23 @@ package adapters
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/luminosita/honeycomb/pkg/http"
 	ctx2 "github.com/luminosita/honeycomb/pkg/http/ctx"
 	"github.com/luminosita/honeycomb/pkg/http/handlers"
 	"github.com/luminosita/honeycomb/pkg/log"
 	"github.com/luminosita/honeycomb/pkg/server"
+	"github.com/luminosita/honeycomb/pkg/util"
 	"github.com/luminosita/honeycomb/pkg/validators"
 	adapters2 "github.com/luminosita/honeycomb/pkg/validators/adapters"
 	rkfiber "github.com/rookie-ninja/rk-fiber/boot"
 	"github.com/spf13/viper"
 	"net/url"
-	"reflect"
 	"runtime"
-	"strings"
 )
 
 const CFG_ENTRY = "config"
 const FIBER_CFG_ENTRY = "fiber"
-const TAG_NAME = "mapstructure"
 
 type FiberServerTemplate struct {
 	c *server.Config
@@ -78,9 +75,9 @@ func convert(handler handlers.Handler) fiber.Handler {
 
 		err := handler(newCtx)
 		if err != nil {
-			var e *validators.BindValidationErrors
+			var e *validators.ValidationError
 			if errors.As(err, &e) {
-				return ctx.Status(fiber.StatusBadRequest).JSON(e.Errors)
+				return ctx.Status(fiber.StatusBadRequest).JSON(e.Error())
 			}
 
 			return ctx.Status(fiber.StatusInternalServerError).JSON(&ctx2.JsonError{err.Error()})
@@ -155,34 +152,5 @@ func (bs *FiberServerTemplate) loadConfig(viper *viper.Viper) error {
 
 	bs.c = c.ServerConfig()
 
-	bs.overrideConfig(viper)
-
-	return nil
-}
-
-func (bs *FiberServerTemplate) overrideConfig(viper *viper.Viper) {
-	//TODO: Not working with overrides
-	t := reflect.TypeOf(bs.c).Elem()
-	s := reflect.ValueOf(bs.c).Elem()
-
-	for k, v := range bs.handler.OverrideConfigItems() {
-		newValue := viper.GetString(k)
-
-		sp := strings.Split(k, ".")
-		tagName := sp[len(sp)-1]
-
-		for i := 0; i < t.NumField(); i++ {
-			tv, ok := t.Field(i).Tag.Lookup(TAG_NAME)
-
-			if ok && tv == tagName {
-				f := s.FieldByName(t.Field(i).Name)
-				if f.Kind() == reflect.String && f.CanSet() {
-					f.SetString(newValue)
-				} else {
-					//TODO: Externalize
-					fmt.Printf("Wrong config field to override: %s", v)
-				}
-			}
-		}
-	}
+	return util.OverrideConfig(viper.GetString, bs.handler.OverrideConfigItems(), bs.c)
 }

@@ -5,11 +5,10 @@ import (
 )
 
 type ValidationError struct {
-	FailedField string `json:"failedField"`
-	Tag         string `json:"tag"`
-	Value       string `json:"value"`
+	Errors []error
 }
 
 func (e *ValidationError) Error() string {
-	return fmt.Sprintf("Error: %s, %s, %s", e.FailedField, e.Tag, e.Value)
+	//TODO: Externalize
+	return fmt.Sprintf("Validation Errors: %+v", e.Errors)
 }

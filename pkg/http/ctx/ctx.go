@@ -43,11 +43,9 @@ func (ctx *Ctx) Bind(obj any) error {
 		return err
 	}
 
-	v_errs := ctx.validator.Validate(obj)
-	if v_errs != nil {
-		return &validators.BindValidationErrors{
-			Errors: v_errs,
-		}
+	err = ctx.validator.Validate(obj)
+	if err != nil {
+		return err
 	}
 
 	return nil

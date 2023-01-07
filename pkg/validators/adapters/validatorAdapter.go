@@ -2,9 +2,10 @@ package adapters
 
 import (
 	errors2 "errors"
+	"fmt"
 	"github.com/go-playground/validator/v10"
-	"github.com/luminosita/honeycomb/pkg/log"
 	"github.com/luminosita/honeycomb/pkg/validators"
+	"github.com/pkg/errors"
 )
 
 type ValidatorAdapter struct {
@@ -17,20 +18,22 @@ func NewValidatorAdapter() *ValidatorAdapter {
 	}
 }
 
-func (v *ValidatorAdapter) Validate(obj any) []error {
-	var e []error
+func (v *ValidatorAdapter) Validate(obj any) error {
+	if obj == nil {
+		return errors.New(fmt.Sprintf("Bad validation request: %+v", obj))
+	}
 
-	log.Log().Debugf("Validation input: %+v", obj)
+	var e []error
 
 	err := v.validator.Struct(obj)
 	if err != nil {
 		if _, ok := err.(validator.ValidationErrors); !ok {
 			//TODO: Externalize
-			return []error{errors2.New("Invalid validation value")}
+			return errors2.New(fmt.Sprintf("Invalid validation value: %+v", err))
 		}
 
 		for _, err := range err.(validator.ValidationErrors) {
-			element := validators.ValidationError{
+			element := validators.FieldError{
 				FailedField: err.StructNamespace(),
 				Tag:         err.Tag(),
 				Value:       err.Param(),
@@ -39,5 +42,10 @@ func (v *ValidatorAdapter) Validate(obj any) []error {
 			e = append(e, &element)
 		}
 	}
-	return e
+
+	if e != nil {
+		return &validators.ValidationError{Errors: e}
+	}
+	
+	return nil
 }
