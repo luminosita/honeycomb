@@ -100,6 +100,7 @@ func TestGood(t *testing.T) {
 	// Create route with GET method for test
 	req := httptest.NewRequest("GET", "/hello", nil)
 	resp, _ := m.app.Test(req, 1)
+	defer func() { _ = req.Body.Close() }()
 
 	assert.Equal(t, 200, resp.StatusCode)
 
@@ -115,6 +116,7 @@ func TestError(t *testing.T) {
 	// Create route with GET method for test
 	req := httptest.NewRequest("GET", "/error", nil)
 	resp, _ := m.app.Test(req, 1)
+	defer func() { _ = req.Body.Close() }()
 
 	assert.Equal(t, 500, resp.StatusCode)
 
@@ -130,6 +132,7 @@ func TestValidationGood(t *testing.T) {
 	// Create route with GET method for test
 	req := httptest.NewRequest("GET", "/validation/good", nil)
 	resp, _ := m.app.Test(req, 1)
+	defer func() { _ = req.Body.Close() }()
 
 	assert.Equal(t, 200, resp.StatusCode)
 
@@ -145,6 +148,7 @@ func TestValidationBad(t *testing.T) {
 	// Create route with GET method for test
 	req := httptest.NewRequest("GET", "/validation/bad", nil)
 	resp, _ := m.app.Test(req, 1)
+	defer func() { _ = req.Body.Close() }()
 
 	assert.Equal(t, 400, resp.StatusCode)
 
@@ -160,6 +164,7 @@ func TestValidationNil(t *testing.T) {
 	// Create route with GET method for test
 	req := httptest.NewRequest("GET", "/validation/nil", nil)
 	resp, _ := m.app.Test(req, 1)
+	defer func() { _ = req.Body.Close() }()
 
 	assert.Equal(t, 500, resp.StatusCode)
 
