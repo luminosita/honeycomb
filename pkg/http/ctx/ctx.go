@@ -67,10 +67,13 @@ func (ctx *Ctx) FormFile(key string) (*multipart.FileHeader, error) {
 	return ctx.fCtx.FormFile(key)
 }
 
-func (ctx *Ctx) SendStream(reader io.Reader, size ...int) error {
+func (ctx *Ctx) SendStream(filename string, reader io.Reader, size ...int) error {
+	ctx.fCtx.Attachment(filename)
+
 	if len(size) > 0 && size[0] >= 0 {
 		return ctx.fCtx.SendStream(reader, size[0])
 	} else {
 		return ctx.fCtx.SendStream(reader)
 	}
+
 }
