@@ -20,10 +20,25 @@ var (
 	db     *mongo.Database
 )
 
+func GetDb() *mongo.Database {
+	//TODO : Externalize
+	db := rkmongo.GetMongoDB("bee-mongo", "bee")
+
+	if db == nil {
+		//TODO : Externalize
+		fmt.Println("Mongo DB not definied in configuration")
+
+		panic("Mongo DB not definied in configuration")
+
+		return nil
+	}
+
+	return db
+}
+
 func GetDbBucket(name string) *gridfs.Bucket {
 	onceBucket.Do(func() { // <-- atomic, does not allow repeating
-		//TODO : Externalize
-		db := rkmongo.GetMongoDB("bee-mongo", "bee")
+		db := GetDb()
 		bucket = createBucket(db, name)
 	})
 
@@ -49,8 +64,7 @@ func createBucket(db *mongo.Database, name string) *gridfs.Bucket {
 
 func GetDbCollection(ctx context.Context, name string) *mongo.Collection {
 	onceDb.Do(func() { // <-- atomic, does not allow repeating
-		//TODO : Externalize
-		db := rkmongo.GetMongoDB("bee-mongo", "bee")
+		db := GetDb()
 		createCollection(ctx, db, name)
 	})
 
