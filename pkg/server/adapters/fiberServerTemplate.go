@@ -5,8 +5,8 @@ import (
 	"errors"
 	"github.com/luminosita/honeycomb/pkg/log"
 	"github.com/luminosita/honeycomb/pkg/server"
-	"github.com/luminosita/honeycomb/pkg/server/utils"
-	"github.com/luminosita/honeycomb/pkg/util"
+	"github.com/luminosita/honeycomb/pkg/server/middleware"
+	"github.com/luminosita/honeycomb/pkg/utils"
 	adapters2 "github.com/luminosita/honeycomb/pkg/validators/adapters"
 	rkfiber "github.com/rookie-ninja/rk-fiber/boot"
 	"github.com/spf13/viper"
@@ -16,6 +16,8 @@ import (
 
 const CFG_ENTRY = "config"
 const FIBER_CFG_ENTRY = "fiber"
+
+const JWT_ENV_KEY = "jwt_secret"
 
 type FiberServerTemplate struct {
 	c *server.Config
@@ -52,7 +54,10 @@ func (bs *FiberServerTemplate) Run(ctx context.Context, viper *viper.Viper) erro
 
 	bs.FiberEntry = rkfiber.GetFiberEntry(FIBER_CFG_ENTRY)
 
-	//	setupMiddlewares(app);
+	err = bs.setupMiddlewares(viper)
+	if err != nil {
+		return err
+	}
 
 	err = bs.setupRoutes(ctx)
 	if err != nil {
@@ -61,6 +66,26 @@ func (bs *FiberServerTemplate) Run(ctx context.Context, viper *viper.Viper) erro
 
 	// This is required!!!
 	bs.RefreshFiberRoutes()
+
+	return nil
+}
+
+func (bs *FiberServerTemplate) setupMiddlewares(viper *viper.Viper) error {
+	a := server.AccessFromString(bs.c.Access)
+
+	if a == server.RESTRICTED {
+		path, err := url.JoinPath(bs.c.BaseUrl)
+		if err != nil {
+			return err
+		}
+
+		secret := viper.GetString(JWT_ENV_KEY)
+		if len(secret) == 0 {
+			return errors.New("JWT Secret not configured")
+		}
+
+		bs.App.Use(path, middleware.Protected(secret))
+	}
 
 	return nil
 }
@@ -117,5 +142,5 @@ func (bs *FiberServerTemplate) loadConfig(viper *viper.Viper) error {
 
 	bs.c = c.ServerConfig()
 
-	return util.OverrideConfig(viper.GetString, bs.handler.OverrideConfigItems(), bs.c)
+	return utils.OverrideConfig(viper.GetString, bs.handler.OverrideConfigItems(), bs.c)
 }

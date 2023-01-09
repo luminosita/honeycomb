@@ -12,7 +12,6 @@ import (
 
 func SetupRoute(app *fiber.App, baseUrl string, r *http.Route) error {
 	path, err := url.JoinPath(baseUrl, r.Path)
-
 	if err != nil {
 		return err
 	}

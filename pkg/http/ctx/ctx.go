@@ -3,6 +3,7 @@ package ctx
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/luminosita/honeycomb/pkg/validators"
 	"github.com/luminosita/honeycomb/pkg/validators/adapters"
 	"io"
@@ -15,7 +16,7 @@ type Ctx struct {
 	Body    []byte
 	Params  map[string]string
 	Headers map[string]string
-	UserId  string
+	Token   *jwt.Token
 
 	validator validators.Validator
 }
@@ -29,11 +30,19 @@ type JsonError struct {
 }
 
 func NewCtx(ctx *fiber.Ctx) *Ctx {
+	var token *jwt.Token
+	u := ctx.Locals("user")
+	if u != nil {
+		token = u.(*jwt.Token)
+	}
+
 	return &Ctx{
-		fCtx:      ctx,
-		Body:      ctx.Body(),
-		Params:    ctx.AllParams(),
-		Headers:   ctx.GetReqHeaders(),
+		fCtx:    ctx,
+		Body:    ctx.Body(),
+		Params:  ctx.AllParams(),
+		Headers: ctx.GetReqHeaders(),
+		Token:   token,
+
 		validator: adapters.NewValidatorAdapter(),
 	}
 }

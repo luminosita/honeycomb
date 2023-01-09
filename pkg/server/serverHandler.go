@@ -12,6 +12,8 @@ type ServerConfigurer interface {
 type Config struct {
 	BaseUrl string `mapstructure:"baseUrl" validate:"required"`
 
+	Access string `mapstructure:"access" validate:"oneof=public restricted"`
+
 	LogCfg LoggerConfig `mapstructure:"logger"`
 }
 
