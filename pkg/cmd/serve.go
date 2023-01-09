@@ -84,15 +84,15 @@ func setupViper(options *ServerOptions, pflags *pflag.FlagSet) (*viper.Viper, er
 	}
 
 	if options.BaseUrl != "" {
-		err := viper.BindPFlag("config.server.baseUrl", pflags.Lookup("baseUrl"))
+		err := vpr.BindPFlag("config.server.baseUrl", pflags.Lookup("baseUrl"))
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	viper.SetEnvPrefix("bee") // will be uppercased automatically
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	viper.AutomaticEnv()
+	vpr.SetEnvPrefix("bee") // will be uppercased automatically
+	vpr.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	vpr.AutomaticEnv()
 
 	return vpr.Viper, nil
 }
