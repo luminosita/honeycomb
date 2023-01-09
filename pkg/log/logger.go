@@ -39,3 +39,10 @@ func Log() Logger {
 func SetLogger(level string, format string) {
 	adapters.SetLogger(Log().(*logrus.Logger), level, format)
 }
+
+func LogError(err error) error {
+	if err != nil {
+		Log().Error(err)
+	}
+	return err
+}
