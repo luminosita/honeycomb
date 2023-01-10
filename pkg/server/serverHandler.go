@@ -2,7 +2,9 @@ package server
 
 import (
 	"context"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/luminosita/honeycomb/pkg/http"
+	"google.golang.org/grpc"
 )
 
 type ServerConfigurer interface {
@@ -30,4 +32,7 @@ type ServerHandler interface {
 	Config() ServerConfigurer
 	Routes(context.Context) []*http.Route
 	OverrideConfigItems() map[string]string
+
+	GrpcRegFunc(server *grpc.Server)
+	GwRegFunc(context.Context, *runtime.ServeMux, string, []grpc.DialOption) error
 }

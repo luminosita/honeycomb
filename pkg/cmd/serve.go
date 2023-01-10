@@ -7,6 +7,7 @@ import (
 	"github.com/luminosita/honeycomb/pkg/server/adapters"
 	rkboot "github.com/rookie-ninja/rk-boot/v2"
 	rkentry "github.com/rookie-ninja/rk-entry/v2/entry"
+	rkgrpc "github.com/rookie-ninja/rk-grpc/v2/boot"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -15,6 +16,7 @@ import (
 )
 
 const CONFIG_ENTRY = "config"
+const GRPC_CONFIG_ENTRY = "grpc"
 
 type ServerOptions struct {
 	// Flags
@@ -56,6 +58,14 @@ func runServe(options *ServerOptions, pflags *pflag.FlagSet, h server.ServerHand
 	}
 
 	boot := rkboot.NewBoot(rkboot.WithBootConfigRaw(bootData))
+
+	grpcEntry := rkgrpc.GetGrpcEntry(GRPC_CONFIG_ENTRY)
+
+	//	rkgrpcjwt.UnaryServerInterceptor()
+
+	grpcEntry.AddRegFuncGrpc(h.GrpcRegFunc)
+	grpcEntry.AddRegFuncGw(h.GwRegFunc)
+
 	boot.Bootstrap(ctx)
 
 	vpr, err := setupViper(options, pflags)
@@ -71,6 +81,8 @@ func runServe(options *ServerOptions, pflags *pflag.FlagSet, h server.ServerHand
 	}
 
 	boot.WaitForShutdownSig(ctx)
+
+	grpcEntry.Interrupt(context.Background())
 
 	return nil
 }
