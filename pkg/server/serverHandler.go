@@ -28,11 +28,13 @@ type LoggerConfig struct {
 	Format string `mapstructure:"format" validate:"omitempty,oneof=text json"`
 }
 
+type GrpcHandler interface {
+	GrpcRegFunc(server *grpc.Server)
+	GwRegFunc(context.Context, *runtime.ServeMux, string, []grpc.DialOption) error
+}
+
 type ServerHandler interface {
 	Config() ServerConfigurer
 	Routes(context.Context) []*http.Route
 	OverrideConfigItems() map[string]string
-
-	GrpcRegFunc(server *grpc.Server)
-	GwRegFunc(context.Context, *runtime.ServeMux, string, []grpc.DialOption) error
 }
