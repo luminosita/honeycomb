@@ -8,19 +8,20 @@ require (
 	github.com/gofiber/jwt/v2 v2.2.7
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/golang/mock v1.6.0
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.12.0
+	github.com/luminosita/common-bee v0.0.0-20230111003335-23cea12824ba
 	github.com/pkg/errors v0.9.1
 	github.com/rookie-ninja/rk-boot/v2 v2.2.15
 	github.com/rookie-ninja/rk-db/mongodb v1.2.14
 	github.com/rookie-ninja/rk-entry/v2 v2.2.16
 	github.com/rookie-ninja/rk-fiber v1.2.15
 	github.com/rookie-ninja/rk-grpc/v2 v2.2.17
-	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.14.0
 	github.com/stretchr/testify v1.8.1
 	go.mongodb.org/mongo-driver v1.10.3
-	google.golang.org/grpc v1.51.0
+	google.golang.org/grpc v1.52.0
 )
 
 require (
@@ -40,7 +41,6 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.12.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/improbable-eng/grpc-web v0.15.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
@@ -65,6 +65,7 @@ require (
 	github.com/rookie-ninja/rk-logger v1.2.13 // indirect
 	github.com/rookie-ninja/rk-query v1.2.14 // indirect
 	github.com/rs/cors v1.7.0 // indirect
+	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/soheilhy/cmux v0.1.5 // indirect
 	github.com/spf13/afero v1.9.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect

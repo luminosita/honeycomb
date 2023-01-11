@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/golang/mock/gomock"
+	utils2 "github.com/luminosita/common-bee/pkg/utils"
 	"github.com/luminosita/honeycomb/pkg/http"
 	"github.com/luminosita/honeycomb/pkg/http/ctx"
 	"github.com/luminosita/honeycomb/pkg/server/middleware"
@@ -122,7 +123,7 @@ func setupTest(m *Mock, restricted ...bool) func() {
 	})
 
 	return func() {
-		defer utils.AssertPanic(m.t)
+		defer utils2.AssertPanic(m.t)
 	}
 }
 

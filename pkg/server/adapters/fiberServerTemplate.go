@@ -3,7 +3,7 @@ package adapters
 import (
 	"context"
 	"errors"
-	"github.com/luminosita/honeycomb/pkg/log"
+	"github.com/luminosita/common-bee/pkg/log"
 	"github.com/luminosita/honeycomb/pkg/server"
 	"github.com/luminosita/honeycomb/pkg/server/middleware"
 	"github.com/luminosita/honeycomb/pkg/utils"
