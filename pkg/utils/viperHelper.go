@@ -7,14 +7,13 @@ import (
 	"strings"
 )
 
-const TAG_NAME = "mapstructure"
+const TagName = "mapstructure"
 
 type ValueRetriever = func(string) string
 
 func OverrideConfig(vr ValueRetriever, overrideConfigItems map[string]string, c any) error {
 	if vr == nil || overrideConfigItems == nil || c == nil {
-		//TODO: Externalize
-		return errors.New(fmt.Sprintf("Bad request: %+v, %+v", overrideConfigItems, c))
+		return errors.New(fmt.Sprintf("bad request: %+v, %+v", overrideConfigItems, c))
 	}
 
 	t := reflect.TypeOf(c).Elem()
@@ -27,15 +26,14 @@ func OverrideConfig(vr ValueRetriever, overrideConfigItems map[string]string, c 
 		tagName := sp[len(sp)-1]
 
 		for i := 0; i < t.NumField(); i++ {
-			tv, ok := t.Field(i).Tag.Lookup(TAG_NAME)
+			tv, ok := t.Field(i).Tag.Lookup(TagName)
 
 			if ok && tv == tagName {
 				f := s.FieldByName(t.Field(i).Name)
 				if f.Kind() == reflect.String && f.CanSet() {
 					f.SetString(newValue)
 				} else {
-					//TODO: Externalize
-					fmt.Printf("Wrong config field to override: %s", v)
+					fmt.Printf("wrong config field to override: %s", v)
 				}
 			}
 		}

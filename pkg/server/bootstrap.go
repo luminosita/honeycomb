@@ -13,16 +13,16 @@ import (
 	"strings"
 )
 
-const CONFIG_ENTRY = "config"
-const GRPC_CONFIG_ENTRY = "grpc"
+const ConfigEntry = "config"
+const GrpcConfigEntry = "grpc"
 
-type ServerOptions struct {
+type Options struct {
 	// Flags
 	BaseUrl   string
 	ConfigUrl string
 }
 
-func RunServe(options *ServerOptions, pflags *pflag.FlagSet, h ServerHandler) error {
+func RunServe(options *Options, pflags *pflag.FlagSet, h ServerHandler) error {
 	ctx := context.Background()
 
 	bootData, err := os.ReadFile(options.ConfigUrl)
@@ -35,7 +35,7 @@ func RunServe(options *ServerOptions, pflags *pflag.FlagSet, h ServerHandler) er
 	var grpcEntry *rkgrpc.GrpcEntry
 
 	if grpcHandler, ok := h.(GrpcHandler); ok {
-		grpcEntry = rkgrpc.GetGrpcEntry(GRPC_CONFIG_ENTRY)
+		grpcEntry = rkgrpc.GetGrpcEntry(GrpcConfigEntry)
 
 		//	rkgrpcjwt.UnaryServerInterceptor()
 
@@ -66,11 +66,11 @@ func RunServe(options *ServerOptions, pflags *pflag.FlagSet, h ServerHandler) er
 	return nil
 }
 
-func setupViper(options *ServerOptions, pflags *pflag.FlagSet) (*viper.Viper, error) {
-	vpr := rkentry.GlobalAppCtx.GetConfigEntry(CONFIG_ENTRY)
+func setupViper(options *Options, pflags *pflag.FlagSet) (*viper.Viper, error) {
+	vpr := rkentry.GlobalAppCtx.GetConfigEntry(ConfigEntry)
 
 	if vpr == nil {
-		return nil, errors.New("Unable to load configuration. Check the configuration file path")
+		return nil, errors.New("unable to load configuration. Check the configuration file path")
 	}
 
 	if options.BaseUrl != "" {

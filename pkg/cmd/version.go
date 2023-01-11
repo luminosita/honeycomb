@@ -8,7 +8,7 @@ import (
 )
 
 func CommandVersion() *cobra.Command {
-	//TODO : Needs to go to config
+	//TODO: Needs to go to config
 	version := "DEV"
 
 	return &cobra.Command{

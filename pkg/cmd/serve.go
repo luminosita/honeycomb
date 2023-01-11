@@ -6,7 +6,7 @@ import (
 )
 
 func CommandServe(h server.ServerHandler) *cobra.Command {
-	options := server.ServerOptions{}
+	options := server.Options{}
 
 	cmd := &cobra.Command{
 		Use:     "serve [flags] environment config-file-path",

@@ -25,7 +25,6 @@ func GetDb() *mongo.Database {
 	db := rkmongo.GetMongoDB("bee-mongo", "bee")
 
 	if db == nil {
-		//TODO : Externalize
 		fmt.Println("Mongo DB not definied in configuration")
 
 		panic("Mongo DB not definied in configuration")
@@ -51,7 +50,6 @@ func createBucket(db *mongo.Database, name string) *gridfs.Bucket {
 	}
 	bucket, err := gridfs.NewBucket(db, opts)
 	if err != nil {
-		//TODO : Externalize
 		fmt.Println("bucket exists may be, continue")
 
 		panic(err)
@@ -75,7 +73,6 @@ func createCollection(ctx context.Context, db *mongo.Database, name string) {
 	opts := options.CreateCollection()
 	err := db.CreateCollection(ctx, name, opts)
 	if err != nil {
-		//TODO : Externalize
 		fmt.Println("collection exists may be, continue")
 	}
 }

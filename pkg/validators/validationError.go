@@ -9,6 +9,5 @@ type ValidationError struct {
 }
 
 func (e *ValidationError) Error() string {
-	//TODO: Externalize
-	return fmt.Sprintf("Validation Errors: %+v", e.Errors)
+	return fmt.Sprintf("validation errors: %+v", e.Errors)
 }

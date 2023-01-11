@@ -90,7 +90,7 @@ func setupTest(m *Mock, restricted ...bool) func() {
 		Type: http.GET,
 		Path: "/error",
 		Handler: &TestHandler{h: func(c *ctx.Ctx) error {
-			return errors.New("Test Error")
+			return errors.New("test error")
 		}},
 	})
 	_ = utils.SetupRoute(m.app, "/validation", &http.Route{
@@ -156,7 +156,7 @@ func TestError(t *testing.T) {
 
 	bytes, err := io.ReadAll(resp.Body)
 	assert.Nil(t, err)
-	assert.Equal(t, "{\"error\":\"Test Error\"}", string(bytes))
+	assert.Equal(t, "{\"error\":\"test error\"}", string(bytes))
 }
 
 func TestValidationGood(t *testing.T) {

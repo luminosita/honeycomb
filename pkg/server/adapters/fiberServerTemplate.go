@@ -14,10 +14,10 @@ import (
 	"runtime"
 )
 
-const CFG_ENTRY = "config"
-const FIBER_CFG_ENTRY = "fiber"
+const CfgEntry = "config"
+const FiberCfgEntry = "fiber"
 
-const JWT_ENV_KEY = "jwt_secret"
+const JwtEnvKey = "jwt_secret"
 
 type FiberServerTemplate struct {
 	c *server.Config
@@ -52,7 +52,7 @@ func (bs *FiberServerTemplate) Run(ctx context.Context, viper *viper.Viper) erro
 		return err
 	}
 
-	bs.FiberEntry = rkfiber.GetFiberEntry(FIBER_CFG_ENTRY)
+	bs.FiberEntry = rkfiber.GetFiberEntry(FiberCfgEntry)
 
 	err = bs.setupMiddlewares(viper)
 	if err != nil {
@@ -79,7 +79,7 @@ func (bs *FiberServerTemplate) setupMiddlewares(viper *viper.Viper) error {
 			return err
 		}
 
-		secret := viper.GetString(JWT_ENV_KEY)
+		secret := viper.GetString(JwtEnvKey)
 		if len(secret) == 0 {
 			return errors.New("JWT Secret not configured")
 		}
@@ -126,7 +126,7 @@ func (bs *FiberServerTemplate) setupLogger() log.Logger {
 func (bs *FiberServerTemplate) loadConfig(viper *viper.Viper) error {
 	c := bs.handler.Config()
 
-	err := viper.UnmarshalKey(CFG_ENTRY, c)
+	err := viper.UnmarshalKey(CfgEntry, c)
 	if err != nil {
 		return err
 	}
@@ -136,8 +136,7 @@ func (bs *FiberServerTemplate) loadConfig(viper *viper.Viper) error {
 	res := validator.Validate(c)
 	if res != nil {
 		log.Log().Errorf("%+v", res)
-		//TODO: Externalize
-		return errors.New("Failed to load configuration")
+		return errors.New("failed to load configuration")
 	}
 
 	bs.c = c.ServerConfig()

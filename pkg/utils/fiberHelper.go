@@ -43,7 +43,7 @@ func convert(handler handlers.Handler) fiber.Handler {
 				return ctx.Status(fiber.StatusBadRequest).JSON(e)
 			}
 
-			return ctx.Status(fiber.StatusInternalServerError).JSON(&ctx2.JsonError{err.Error()})
+			return ctx.Status(fiber.StatusInternalServerError).JSON(&ctx2.JsonError{Msg: err.Error()})
 		}
 
 		return nil
