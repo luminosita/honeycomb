@@ -1,9 +1,11 @@
-package server
+package fiberadapter
 
 import (
 	"context"
 	"errors"
-	"github.com/luminosita/honeycomb/pkg/server/adapters"
+	"github.com/luminosita/honeycomb/pkg/server"
+
+	//	"github.com/luminosita/honeycomb/pkg/server/adapters"
 	rkboot "github.com/rookie-ninja/rk-boot/v2"
 	rkentry "github.com/rookie-ninja/rk-entry/v2/entry"
 	rkgrpc "github.com/rookie-ninja/rk-grpc/v2/boot"
@@ -22,7 +24,7 @@ type Options struct {
 	ConfigUrl string
 }
 
-func RunServe(options *Options, pflags *pflag.FlagSet, h ServerHandler) error {
+func RunServe(options *Options, pflags *pflag.FlagSet, h server.ServerHandler) error {
 	ctx := context.Background()
 
 	bootData, err := os.ReadFile(options.ConfigUrl)
@@ -34,7 +36,7 @@ func RunServe(options *Options, pflags *pflag.FlagSet, h ServerHandler) error {
 
 	var grpcEntry *rkgrpc.GrpcEntry
 
-	if grpcHandler, ok := h.(GrpcHandler); ok {
+	if grpcHandler, ok := h.(server.GrpcHandler); ok {
 		grpcEntry = rkgrpc.GetGrpcEntry(GrpcConfigEntry)
 
 		//	rkgrpcjwt.UnaryServerInterceptor()
@@ -50,7 +52,7 @@ func RunServe(options *Options, pflags *pflag.FlagSet, h ServerHandler) error {
 		return err
 	}
 
-	srv := adapters.NewFiberServerTemplate(h)
+	srv := NewFiberServerTemplate(h)
 
 	err = srv.Run(ctx, vpr)
 	if err != nil {

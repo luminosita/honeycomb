@@ -9,7 +9,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/golang/mock v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.12.0
-	github.com/luminosita/common-bee v0.0.0-20230111003335-23cea12824ba
+	github.com/luminosita/common-bee v0.0.0-20230111124120-39c744769ed2
 	github.com/pkg/errors v0.9.1
 	github.com/rookie-ninja/rk-boot/v2 v2.2.15
 	github.com/rookie-ninja/rk-db/mongodb v1.2.14
